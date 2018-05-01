@@ -2,6 +2,8 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
+const flash = require('connect-flash');
+const session = require('express-session');
 
 
 // Routes
@@ -28,6 +30,24 @@ app.use(express.json());
 
 // Method override middleware
 app.use(methodOverride('_method'));
+
+// Express session middleware
+app.use(session({
+  secret: 'secret',
+  resave: true,
+  saveUninitialized: true,
+}));
+
+// Flash middleware
+app.use(flash());
+
+// Global variables
+app.use(function (req, res, next) {
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
+  res.locals.error = req.flash('error');
+  next();
+});
 
 //Routes Middleware
 app.use('/notes', notesRoutes);
