@@ -9,4 +9,4 @@ const NoteSchema = new Schema({
   date: { type: Date, default: Date.now }
 });
 
-mongoose.model('notes', NoteSchema);
+module.exports = mongoose.model('notes', NoteSchema);
