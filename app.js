@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const exphbs = require('express-handlebars');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
@@ -9,6 +10,7 @@ const session = require('express-session');
 // Routes
 const indexRoutes = require('./routes/index');
 const notesRoutes = require('./routes/notes');
+const usersRoutes = require('./routes/users');
 
 
 const app = express();
@@ -27,6 +29,9 @@ app.set('view engine', 'handlebars');
 // Express JSON Middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+// Static folder middleware
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Method override middleware
 app.use(methodOverride('_method'));
@@ -51,6 +56,7 @@ app.use(function (req, res, next) {
 
 //Routes Middleware
 app.use('/notes', notesRoutes);
+app.use('/users', usersRoutes);
 app.use('/', indexRoutes);
 
 
