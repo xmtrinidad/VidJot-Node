@@ -2,7 +2,7 @@ const Note = require('../models/note');
 
 
 exports.get_all_notes = (req, res) => {
-  Note.find({})
+  Note.find({ user: req.user.id })
     .sort({ date: 'desc' })
     .then(notes => {
       res.render('notes/index', { notes: notes });
@@ -16,7 +16,12 @@ exports.get_note_form = (req, res) => {
 exports.get_edit_note_form = (req, res) => {
   Note.findOne({ _id: req.params.id })
     .then(note => {
-      res.render('notes/edit', { note: note });
+      if (note.user != req.user.id) {
+        req.flash('error_msg', 'Not Authorized');
+        res.redirect('/notes');
+      } else {
+        res.render('notes/edit', { note: note });
+      }
     });
 };
 
@@ -40,7 +45,8 @@ exports.post_new_note = (req, res) => {
   } else {
     const newUser = {
       title: req.body.title,
-      note: req.body.note
+      note: req.body.note,
+      user: req.user.id
     }
     new Note(newUser)
       .save()

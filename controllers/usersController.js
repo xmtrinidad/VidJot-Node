@@ -63,3 +63,17 @@ exports.post_user_register = (req, res) => {
   }
 
 };
+
+exports.post_user_login = (req, res, next) => {
+  passport.authenticate('local', {
+    successRedirect: '/notes',
+    failureRedirect: '/users/login',
+    failureFlash: true
+  })(req, res, next);
+};
+
+exports.post_user_logout = (req, res) => {
+  req.logout();
+  req.flash('success_msg', 'You are logged out');
+  res.redirect('/users/login');
+}
